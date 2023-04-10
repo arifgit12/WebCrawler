@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 public class CrawlTheHinduTest {
-    static final String crawlUrl = "https://www.thehindu.com/news/international/uk-pm-sunak-to-meet-us-president-in-northern-ireland/article66718264.ece";
+    static final String crawlUrl = "https://www.thehindu.com/news/national/profile-on-the-mughals/article66714869.ece";
     public static void main(String[] args) throws IOException {
 
         System.out.println("The Hindu In Crawler");
