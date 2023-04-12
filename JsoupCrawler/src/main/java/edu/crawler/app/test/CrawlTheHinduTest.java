@@ -1,4 +1,4 @@
-package edu.crawler.app;
+package edu.crawler.app.test;
 
 import edu.crawler.app.configuration.TheHinduTag;
 import org.jsoup.Jsoup;
