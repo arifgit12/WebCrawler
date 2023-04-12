@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class CNNTestApp {
     static String
-            crawlUrl = "https://edition.cnn.com/2023/04/11/politics/alvin-bragg-sues-jim-jordan/index.html";
+            crawlUrl = "https://edition.cnn.com/2023/04/11/politics/pentagon-documents-ukraine-war-assessment/index.html";
     public static void main(String[] args) throws IOException {
         System.out.println("CNN Web Crawling Test");
 
@@ -20,10 +20,11 @@ public class CNNTestApp {
             String headline = element.select(".headline__wrapper > h1").text();
             System.out.println(headline);
 
-//            Elements categoryHref = element.getElementsByTag("ul");
-//            categoryHref.stream().forEach(System.out::println);
-//            String categoryText = categoryHref.first().select(".current").text();
-//            System.out.println("Category: " + categoryText);
+            String[] categoryText = crawlUrl.split("/");
+            if (categoryText.length>6){
+                System.out.println("Category: " + categoryText[6]);
+            }
+
 
             // Article Published On
             String publishedOn = element.select(".headline__sub-text .timestamp").text();
@@ -32,9 +33,10 @@ public class CNNTestApp {
 
             String authorName = element.select(".headline__sub-text .byline__names a").text();
             System.out.println(authorName);
-//
-//            String articleImageUrl = element.select(".main-photo").attr("src");
-//            System.out.println(articleImageUrl);
+
+            Elements imgElements = element.select(".article__main .image__container .image__picture");
+            System.out.println(imgElements.last().select("img[src~=(?i).(png|jpe?g)]").attr("abs:src"));
+
 
             String articleDescription =
                     element.select(".article__content > p").text();
