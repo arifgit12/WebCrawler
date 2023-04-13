@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.util.Date;
 
 public class TheWireInRDApp {
-    private final static String articleUrl ="https://thewire.in/law/bjp-mla-demand-to-demolish-taj-mahal-qutub-minar";
+    private final static String
+            articleUrl ="https://thewire.in/law/it-rules-fact-check-kunal-kamra-petition-bombay-hc";
     public static void main(String[] args) throws IOException {
         System.out.println("The Wire In Crawler");
 
