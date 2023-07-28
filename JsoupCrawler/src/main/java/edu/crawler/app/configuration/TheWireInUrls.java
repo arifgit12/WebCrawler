@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TheWireInUrls {
+    public static final String primaryUrl = "https://thewire.in";
     public static final String
             url1="https://thewire.in/environment/sikkim-at-least-seven-persons-killed-in-avalanche-rescue-efforts-underway";
     public static final String

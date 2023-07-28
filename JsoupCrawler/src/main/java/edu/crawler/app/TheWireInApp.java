@@ -12,7 +12,31 @@ import java.io.IOException;
 import java.util.Date;
 
 public class TheWireInApp {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        try {
+            String url = "https://thewire.in/education/biology-without-darwin-next-physics-without-newton-and-einstein";
+            Document document = Jsoup.connect(url).get();
+            String title = document.title();
+            String content = document.body().text();
+            System.out.println("Title: " + title);
+            System.out.println("Content: " + content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void mainPage(String[] args) throws IOException {
+        System.out.println("The Wire In Crawler");
+        String url = TheWireInUrls.primaryUrl;
+        Document doc = Jsoup.connect(url).get();
+        Elements links = doc.select("a[href]");
+        for (Element link : links) {
+            //System.out.println(link);
+            String href = link.attr("href");
+            System.out.println(href);
+        }
+    }
+
+    public static void crawlContent() throws IOException {
         System.out.println("The Wire In Crawler");
         for (String url: TheWireInUrls.urls) {
             Document document = Jsoup.connect(url).get();
