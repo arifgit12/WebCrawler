@@ -6,6 +6,7 @@ import in.arifalimondal.orderservice.dto.OrderRequest;
 import in.arifalimondal.orderservice.model.Order;
 import in.arifalimondal.orderservice.model.OrderLineItems;
 import in.arifalimondal.orderservice.repository.OrderRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,15 +19,16 @@ import java.util.UUID;
 @Service
 @Transactional
 @Slf4j
+@AllArgsConstructor
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
-    public OrderService(OrderRepository orderRepository, WebClient.Builder webClientBuilder) {
-        this.orderRepository = orderRepository;
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8082").build();
-    }
+//    public OrderService(OrderRepository orderRepository, WebClient webClientBuilder) {
+//        this.orderRepository = orderRepository;
+//        this.webClient = webClientBuilder; //.baseUrl("http://localhost:8082").build();
+//    }
 
     public void placeOrder(OrderRequest orderRequest) {
 
@@ -45,8 +47,9 @@ public class OrderService {
         List<String> skuCodes = order.getOrderLineItemsList().stream()
                                         .map(OrderLineItems::getSkuCode)
                                         .toList();
-        InventoryResponse[] inventoryResponseArray = webClient.get()
-                                    .uri("/api/inventory",
+
+        InventoryResponse[] inventoryResponseArray = webClientBuilder.build().get()
+                                    .uri("http://inventory-service/api/inventory",
                                             uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
                                     .retrieve()
                                     .bodyToMono(InventoryResponse[].class)

@@ -21,14 +21,15 @@ public class InventoryService {
         return inventoryRepository.findBySkuCode(skuCode).isPresent();
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public List<InventoryResponse> isInStock(List<String> skuCode){
         log.info("Checking Stock");
-        return inventoryRepository.findBySkuCodeIn(skuCode)
-                .stream().map(inventory -> InventoryResponse.builder()
-                                                .skuCode(inventory.getSkuCode())
-                                                .isInStock(inventory.getQuantity()>0)
-                                                .build())
-                .toList();
+        return inventoryRepository.findBySkuCodeIn(skuCode).stream()
+                .map(inventory ->
+                        InventoryResponse.builder()
+                                .skuCode(inventory.getSkuCode())
+                                .isInStock(inventory.getQuantity() > 0)
+                                .build()
+                ).toList();
     }
 }
