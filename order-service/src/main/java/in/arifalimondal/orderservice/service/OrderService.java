@@ -30,7 +30,7 @@ public class OrderService {
 //        this.webClient = webClientBuilder; //.baseUrl("http://localhost:8082").build();
 //    }
 
-    public void placeOrder(OrderRequest orderRequest) {
+    public String placeOrder(OrderRequest orderRequest) {
 
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
@@ -59,6 +59,7 @@ public class OrderService {
 
         if (allProductInStock) {
             orderRepository.save(order);
+            return "Order placed successfully";
         }else {
             throw new IllegalArgumentException("Items not in stock, try later");
         }
