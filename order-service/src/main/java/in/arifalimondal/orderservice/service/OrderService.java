@@ -3,11 +3,13 @@ package in.arifalimondal.orderservice.service;
 import in.arifalimondal.orderservice.dto.InventoryResponse;
 import in.arifalimondal.orderservice.dto.OrderLineItemsDto;
 import in.arifalimondal.orderservice.dto.OrderRequest;
+import in.arifalimondal.orderservice.event.OrderPlacedEvent;
 import in.arifalimondal.orderservice.model.Order;
 import in.arifalimondal.orderservice.model.OrderLineItems;
 import in.arifalimondal.orderservice.repository.OrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,6 +26,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
 
 //    public OrderService(OrderRepository orderRepository, WebClient webClientBuilder) {
 //        this.orderRepository = orderRepository;
@@ -59,6 +62,8 @@ public class OrderService {
 
         if (allProductInStock) {
             orderRepository.save(order);
+            kafkaTemplate.send("notificationTopic",
+                    new OrderPlacedEvent(order.getOrderNumber()));
             return "Order placed successfully";
         }else {
             throw new IllegalArgumentException("Items not in stock, try later");
