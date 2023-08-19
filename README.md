@@ -54,8 +54,29 @@ output {
 	}
 }
 
+# MicroService Configuration
+# Received log over TCP
+input {
+tcp {
+port => 5000
+codec => json
+}
+}
+
+#index => "microservice-logs-inv"
+output {
+elasticsearch {
+hosts => ["localhost:9200"]
+index => "micro-%{appName}"
+}
+
+	stdout {
+		codec => json_lines
+	}
+}
+
 12. ./logstash -f ./config/logstash.conf
-13. 
+13. http://localhost:9600/
 
 
 

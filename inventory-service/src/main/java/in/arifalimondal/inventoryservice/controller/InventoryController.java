@@ -20,7 +20,7 @@ public class InventoryController {
     @GetMapping("/check/{sku-code}")
     @ResponseStatus(HttpStatus.OK)
     public boolean checkInStock(@PathVariable("sku-code") String skuCode){
-        log.info("Check Inventory Stocked:" + skuCode);
+        log.info("Received Inventory Stocked checked request of Code:" + skuCode);
         return inventoryService.checkStock(skuCode);
     }
 

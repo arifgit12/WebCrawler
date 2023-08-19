@@ -1,6 +1,7 @@
 package in.arifalimondal.inventoryservice.service;
 
 import in.arifalimondal.inventoryservice.dto.InventoryResponse;
+import in.arifalimondal.inventoryservice.model.Inventory;
 import in.arifalimondal.inventoryservice.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,9 +18,17 @@ public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public boolean checkStock(String skuCode){
-        return inventoryRepository.findBySkuCode(skuCode).isPresent();
+        log.info("Checking Stock of {}", skuCode);
+        Optional<Inventory> inventory = inventoryRepository.findBySkuCode(skuCode);
+
+        if (inventory.isPresent()){
+            return true;
+        } else {
+            log.error("Item skuCode {} not found", skuCode);
+            return false;
+        }
     }
 
     @Transactional(readOnly = true)
