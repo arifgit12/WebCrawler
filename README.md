@@ -76,8 +76,10 @@ index => "micro-%{appName}"
 }
 
 12. ./logstash -f ./config/logstash.conf
+    ./logstash -f ./config/logstash-microservice.conf
 13. http://localhost:9600/
 
+14. Eureka Discovery Service : http://localhost:8761/
 
 
 
