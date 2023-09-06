@@ -1,6 +1,8 @@
 package in.arifalimondal.gatewayservice.filter;
 
 import in.arifalimondal.gatewayservice.util.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -14,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     @Autowired
     private RouteValidator validator;
@@ -41,16 +45,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     authHeader = authHeader.substring(7);
-                    System.out.println("Token: "+authHeader);
+                    //System.out.println("Token: "+authHeader);
                 }
                 try {
                     //REST call to AUTH service
-                    //ValidateTokenFromIdentityServer(authHeader);
+                    ValidateTokenFromIdentityServer(authHeader);
 
+                    logger.info("Validation token");
                     jwtUtil.validateToken(authHeader);
                 } catch (Exception e) {
-                    System.out.println("invalid access...!");
-                    System.out.println(e.getMessage());
+                    logger.error("Invalid Access .... {}", e.getMessage());
                     throw new RuntimeException("un authorized access to application");
                 }
             }
@@ -69,9 +73,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 .retrieve()
                 .bodyToMono(String.class);
 
-        System.out.println(result);
         String response = result.subscribeOn(Schedulers.boundedElastic()).toFuture().get(5L, TimeUnit.SECONDS);
-        System.out.println(response);
+        logger.info("Identity Service Response : {}", response);
     }
 
     public static class Config {
