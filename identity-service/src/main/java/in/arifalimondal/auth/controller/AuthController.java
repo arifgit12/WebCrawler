@@ -49,7 +49,6 @@ public class AuthController {
         return "Token is valid";
     }
 
-    
     @GetMapping("/secured")
     public String Authenticated() {
         logger.info("Test is API Secured");
