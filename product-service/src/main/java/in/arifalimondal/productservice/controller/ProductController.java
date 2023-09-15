@@ -3,7 +3,6 @@ package in.arifalimondal.productservice.controller;
 import in.arifalimondal.productservice.dto.ProductRequest;
 import in.arifalimondal.productservice.dto.ProductResponse;
 import in.arifalimondal.productservice.service.ProductService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,5 +26,11 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public List<ProductResponse> getAllProducts(){
         return productService.getAllProducts();
+    }
+
+    @GetMapping("/test")
+    //@PreAuthorize("hasRole('ORDER')")
+    public String adminOrders() {
+        return "This is the admin orders page.";
     }
 }
