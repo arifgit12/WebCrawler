@@ -7,6 +7,7 @@ import in.arifalimondal.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,10 +15,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository productRepository;
 
+    @Transactional
     public void createProduct(ProductRequest productRequest){
         Product product = Product.builder()
                                 .name(productRequest.getName())
