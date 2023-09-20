@@ -50,6 +50,8 @@ public class AuthConfig {
                         auth.requestMatchers(
                     "/api/auth/register",
                             "/api/auth/token",
+                            "/api/auth/login",
+                            "/api/auth/refreshToken",
                             "/api/auth/validate",
                             "/actuator/*")
                             .permitAll()

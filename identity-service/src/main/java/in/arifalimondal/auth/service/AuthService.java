@@ -36,5 +36,4 @@ public class AuthService {
         jwtService.validateToken(token);
     }
 
-
 }
