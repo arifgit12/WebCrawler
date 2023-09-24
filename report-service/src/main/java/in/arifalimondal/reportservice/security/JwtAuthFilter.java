@@ -11,16 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,7 +43,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (claimDTO != null &&
                     claimDTO.getUsername() != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
-                filterLogger.info("Username: {}", claimDTO.getUsername());
+                filterLogger.info("Username: {} and Authorities Size: {}",
+                        claimDTO.getUsername(), claimDTO.getAuthorities().size());
                 Set<GrantedAuthority> authoritySet = new HashSet<>(claimDTO.getAuthorities());
                 CustomUserDetails userDetails = new CustomUserDetails(claimDTO.getUsername(), authoritySet);
                 if (jwtService.validateToken(token, claimDTO.getUsername())) {

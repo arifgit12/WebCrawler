@@ -3,8 +3,11 @@ package in.arifalimondal.reportservice.security;
 import in.arifalimondal.reportservice.Dto.ClaimDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -21,35 +24,42 @@ public class JwtService {
 
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
+    private static final Logger jwtLogger = LoggerFactory.getLogger(JwtService.class);
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     public ClaimDTO extractClaimDetails(String token) {
-        ClaimDTO tokenDetail = new ClaimDTO();
-        Claims claims = extractAllClaims(token);
-        String username = claims.getSubject();
-        List<Object> authoritiesList = (List<Object>) claims.get("authorities");
+        try {
+            ClaimDTO tokenDetail = new ClaimDTO();
+            Claims claims = extractAllClaims(token);
+            String username = claims.getSubject();
+            List<Object> authoritiesList = (List<Object>) claims.get("authorities");
 
-        Set<GrantedAuthority> authoritiesSet = new HashSet<>();
+            Set<GrantedAuthority> authoritiesSet = new HashSet<>();
 
-        for (Object authorityObject : authoritiesList) {
-            if (authorityObject instanceof String) {
-                // If the authority is represented as a String, add it as a SimpleGrantedAuthority
-                authoritiesSet.add(new SimpleGrantedAuthority((String) authorityObject));
-            } else if (authorityObject instanceof java.util.Map) {
-                // If the authority is represented as a Map (e.g., JSON object), extract the "authority" field
-                Object authorityFieldValue = ((java.util.Map) authorityObject).get("authority");
-                if (authorityFieldValue instanceof String) {
-                    authoritiesSet.add(new SimpleGrantedAuthority((String) authorityFieldValue));
+            for (Object authorityObject : authoritiesList) {
+                if (authorityObject instanceof String) {
+                    // If the authority is represented as a String, add it as a SimpleGrantedAuthority
+                    authoritiesSet.add(new SimpleGrantedAuthority((String) authorityObject));
+                } else if (authorityObject instanceof java.util.Map) {
+                    // If the authority is represented as a Map (e.g., JSON object), extract the "authority" field
+                    Object authorityFieldValue = ((java.util.Map) authorityObject).get("authority");
+                    if (authorityFieldValue instanceof String) {
+                        authoritiesSet.add(new SimpleGrantedAuthority((String) authorityFieldValue));
+                    }
                 }
             }
+
+            tokenDetail.setUsername(username);
+            tokenDetail.setAuthorities(authoritiesSet);
+
+            return  tokenDetail;
+        } catch (MalformedJwtException e) {
+            jwtLogger.error(e.getMessage());
+            throw e;
         }
 
-        tokenDetail.setUsername(username);
-        tokenDetail.setAuthorities(authoritiesSet);
-
-        return  tokenDetail;
     }
 
     public Date extractExpiration(String token) {
