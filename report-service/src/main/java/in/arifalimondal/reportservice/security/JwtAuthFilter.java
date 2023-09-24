@@ -11,11 +11,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -57,7 +61,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException | SignatureException ex) {
             filterLogger.error(ex.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token Expired or Invalid");
+            String errorMessage = "{\"error\": \"Unauthorized\", \"message\": \"Token Expired or Invalid\"}";
+            response.getWriter().write(errorMessage);
             response.getWriter().flush();
         }
     }

@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -44,25 +46,29 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
             if (validator.isSecured.test(request)) {
                 if (!request.getHeaders().containsKey("Authorization")) {
-                    return this.onError(exchange, "No Authorization header", HttpStatus.UNAUTHORIZED);
+                    return getResponseError(exchange, "{\"error\": \"Unauthorized\", \"message\": \"No Authorization header\"}");
+                    //return this.onError(exchange, "No Authorization header", HttpStatus.UNAUTHORIZED);
                 }
 
                 String authorizationHeader = request.getHeaders().get("Authorization").get(0);
 
                 if (!this.isAuthorizationValid(authorizationHeader)) {
-                    return this.onError(exchange, "Invalid Authorization header", HttpStatus.UNAUTHORIZED);
+                    return getResponseError(exchange, "{\"error\": \"Unauthorized\", \"message\": \"Invalid Authorization header\"}");
+                    //return this.onError(exchange, "Invalid Authorization header", HttpStatus.UNAUTHORIZED);
                 }
 
             }
 
-//            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate().
-//                    header("secret", RandomStringUtils.random(10)).
-//                    build();
-//
-//            return chain.filter(exchange.mutate().request(modifiedRequest).build());
 
             return chain.filter(exchange);
         });
+    }
+
+    private Mono<Void> getResponseError(ServerWebExchange exchange, String s) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        String errorMessage = s;
+        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(errorMessage.getBytes());
+        return exchange.getResponse().writeWith(Mono.just(buffer));
     }
 
     private boolean isAuthorizationValid(String authHeader) {
@@ -80,7 +86,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         } catch (Exception e) {
             logger.error("Invalid Access .... {}", e.getMessage());
             isValid=false;
-            //throw new RuntimeException("un authorized access to application");
         }
 
         return isValid;
@@ -91,6 +96,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
 
+        DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(err.getBytes());
+        response.writeWith(Mono.just(buffer));
         return response.setComplete();
     }
 
