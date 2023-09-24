@@ -29,7 +29,7 @@ public class AuthService {
     }
 
     public String generateToken(String username) {
-        return jwtService.generateToken(username);
+        return jwtService.generateTokenWithAuthorities(username);
     }
 
     public void validateToken(String token) {
