@@ -56,7 +56,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException | SignatureException ex) {
             filterLogger.error(ex.getMessage());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token Expired or Invalid");
+            response.getWriter().flush();
         }
     }
 }
