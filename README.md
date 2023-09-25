@@ -80,7 +80,9 @@ index => "micro-%{appName}"
 13. http://localhost:9600/
 
 14. Eureka Discovery Service : http://localhost:8761/
-
+15. Identity-service for authentication and authorization
+16. report-service implements EnableWebSecurity and EnableMethod Security
+17. 
 
 
 
