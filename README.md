@@ -1,6 +1,6 @@
 # WebCrawler
 Web Crawler to crawl websites
-This Application will be to crawl websites with configuration provided.
+This Application will be to crawl websites with the configuration provided.
 
 mongod.exe --dbpath D:\mongodb_server_data\data
 
@@ -79,7 +79,7 @@ index => "micro-%{appName}"
     ./logstash -f ./config/logstash-microservice.conf
 13. http://localhost:9600/
 
-14. Eureka Discovery Service : http://localhost:8761/
+14. Eureka Discovery Service: http://localhost:8761/
 15. Identity-service for authentication and authorization
 16. report-service implements EnableWebSecurity and EnableMethod Security
 17. 
