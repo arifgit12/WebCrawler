@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        encrypt:
+          # We will send encrypted properties
+          enabled: false
+        git:
+          uri: https://github.com/arifgit12/WebCrawler.git
+          searchPaths: api-gateway,discovery-service,order-service
+          defaultLabel: master

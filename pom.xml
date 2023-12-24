@@ -25,6 +25,7 @@
         <module>product-query-service</module>
         <module>product-command-service</module>
         <module>report-service</module>
+        <module>config-service</module>
     </modules>
     <properties>
         <java.version>17</java.version>
