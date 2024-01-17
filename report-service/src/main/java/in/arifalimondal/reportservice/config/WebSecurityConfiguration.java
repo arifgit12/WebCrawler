@@ -35,7 +35,9 @@ public class WebSecurityConfiguration {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
                                 "/api/test/**",
-                                "/actuator/*")
+                                "/api/image/**",
+                                "/actuator/*"
+                                )
                                 .permitAll()
                                 .requestMatchers( "/api/report/**")
                                 .authenticated())
