@@ -8,6 +8,10 @@ spring:
           # We will send encrypted properties
           enabled: false
         git:
-          uri: https://github.com/arifgit12/WebCrawler.git
-          searchPaths: api-gateway,discovery-service,order-service
-          defaultLabel: master
+          uri: https://github.com/arifgit12/microservices-config-server.git
+          searchPaths: report-service
+          #defaultLabel: master
+          #clone-on-start: true
+server:
+  port: 8888
+
